@@ -1,0 +1,147 @@
+version: '3.4'
+name: "rent-compose-2"
+services:
+
+    localstack:
+        container_name: "localstack"
+        image: localstack/localstack
+        ports:
+          - "127.0.0.1:4566:4566"            # LocalStack Gateway
+          - "127.0.0.1:4510-4559:4510-4559"  # external services port range
+        environment:
+          # LocalStack configuration: https://docs.localstack.cloud/references/configuration/
+          - DEBUG=${DEBUG:-0}
+        volumes:
+          - "${LOCALSTACK_VOLUME_DIR:-./volume}:/var/lib/localstack"
+          - "/var/run/docker.sock:/var/run/docker.sock"
+        networks:
+            - backend
+
+    terraform:
+        image: hashicorp/terraform:1.8.3
+        container_name: terraform
+        volumes:
+          - .:/terraform
+          - ./init-apply.sh:/init-apply.sh
+          - ./terraform:/terraform
+          - ./.terraform:/terraform/.terraform
+        working_dir: /terraform
+        entrypoint: ["/bin/sh", "/init-apply.sh"]
+        command: ["/bin/sh", "/init-apply.sh"]
+        networks:
+            - backend
+        depends_on:
+          - localstack
+
+    mongodb_server:
+        image: mongo
+        container_name: mongodb_server
+        hostname: mongodb_server
+        ports:
+          - "27017:27017"
+        networks:
+          - backend
+        volumes:
+          - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+
+    #Gatewayq
+    envoygatewy:
+        build: envoy
+        volumes:
+            - ./envoy/envoy.yaml:/etc/envoy/envoy.yaml
+        ports:
+            - "9902:9902"
+            - "10000:10000"
+        networks:
+            - backend
+
+
+    rent.service:
+        container_name: rent.service
+        build:
+            context: ../../../service-user/src/
+            dockerfile: Dockerfile
+        environment:
+        - ASPNETCORE_ENVIRONMENT=Production
+        ports: 
+        - "8090:8090"
+        networks:
+        - backend
+        depends_on:
+            loki:
+                condition: service_healthy
+
+    consumidor.order:
+        build:
+            context: ../../../service-user/src/
+            dockerfile: DockerfileConsumer
+        environment:
+        - ASPNETCORE_ENVIRONMENT=Production
+        networks:
+        - backend
+        depends_on:
+        - localstack
+             
+
+    loki:
+        container_name: loki
+        image: grafana/loki:2.9.2
+        ports:
+           - 3100:3100
+        command: -config.file=/etc/loki/local-config.yaml
+        healthcheck:
+            test: wget -q --tries=1 -O- http://localhost:3100/ready 
+            interval: 3s
+            timeout: 3s
+            retries: 10
+            start_period: 10s
+        networks:
+        - backend
+
+    promtail:
+        image: grafana/promtail:2.9.2
+        volumes:
+          - /var/log:/var/log
+        command: -config.file=/etc/promtail/config.yml
+        networks:
+          - backend
+
+    grafana:
+        environment:
+          - GF_PATHS_PROVISIONING=/etc/grafana/provisioning
+          - GF_AUTH_ANONYMOUS_ENABLED=true
+          - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+        entrypoint:
+          - sh
+          - -euc
+          - |
+            mkdir -p /etc/grafana/provisioning/datasources
+            cat <<EOF > /etc/grafana/provisioning/datasources/ds.yaml
+            apiVersion: 1
+            datasources:
+            - name: Loki
+              type: loki
+              access: proxy 
+              orgId: 1
+              url: http://loki:3100
+              basicAuth: false
+              isDefault: true
+              version: 1
+              editable: false
+            EOF
+            /run.sh
+        container_name: grafana
+        image: grafana/grafana:latest
+        ports:
+            - "3000:3000"
+        depends_on:
+            loki:
+                condition: service_healthy
+        networks:
+        - backend
+
+networks:
+    backend:
+        driver: bridge
+volumes:
+  mongodb_data1:

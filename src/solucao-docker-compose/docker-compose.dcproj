@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" Sdk="Microsoft.Docker.Sdk">
+  <PropertyGroup Label="Globals">
+    <ProjectVersion>2.1</ProjectVersion>
+    <DockerTargetOS>Linux</DockerTargetOS>
+    <ProjectGuid>36aef74f-2bca-4b87-b9c2-c3214131b749</ProjectGuid>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="docker-compose.yml" />
+    <None Include=".dockerignore" />
+    <None Include="envoy\Dockerfile" />
+    <None Include="envoy\envoy.yaml" />
+    <None Include="terraform\.auto.tfvars" />
+    <None Include="terraform\provider.tf" />
+    <None Include="terraform\s3.tf" />
+    <None Include="terraform\sqs.tf" />
+    <None Include="terraform\versions.tf" />
+  </ItemGroup>
+</Project>
