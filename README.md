@@ -24,3 +24,6 @@ Repositório com arquivos dockers entre outros para iniciar o ambiente do projet
 | RentService | localhost:9090 | Para alterar o idioma para mudar o cabeçalho Accept-Language da requisição para (pt-BR ou en-US) |
 | Loki | localhost:3100 | Para testar se está ativo pode usar http://localhost:3100/ready |
 | Grafana | localhost:3000 | Autenticação anônima, caso necessite Usuário: Admin e Senha: Admin |
+
+### Screen Shot - LocalStack
+<img src="https://github.com/cteotonio-rent/documentacao/blob/main/src/localstack.png" />
