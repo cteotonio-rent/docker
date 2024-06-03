@@ -19,3 +19,8 @@ Repositório com arquivos dockers entre outros para iniciar o ambiente do projet
 | Container | Links | Observação |
 |-------------|-------------|-------------|
 | Localstack| localhots:4456 | precisa de autenticação no endereço https://app.localstack.cloud/ |
+| MongoDB | localhost:27017 | não requer autenticação |
+| EnvoyGateway | localhost:9902 (Admim) | localhost:10000 é o proxy / localhost:9902/clusters | 
+| RentService | localhost:9090 | Para alterar o idioma para mudar o cabeçalho Accept-Language da requisição para (pt-BR ou en-US) |
+| Loki | localhost:3100 | Para testar se está ativo pode usar http://localhost:3100/ready |
+| Grafana | localhost:3000 | Autenticação anônima, caso necessite Usuário: Admin e Senha: Admin |
