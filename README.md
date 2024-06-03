@@ -33,7 +33,7 @@ Repositório com arquivos dockers entre outros para iniciar o ambiente do projet
 
 ## Como rodar o projeto ✅
 1. Em seu Terminal navegue até a pasta clonada deste repositório
-2. Dentro da pasta src digit o comando abaixo para compilar os projetos e carregar os containers
+2. Dentro da pasta **src\solucao-docker-compose** digit o comando abaixo para compilar os projetos e carregar os containers
 
 ```
 docker-compose up --buld
