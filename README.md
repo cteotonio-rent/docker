@@ -27,3 +27,6 @@ Repositório com arquivos dockers entre outros para iniciar o ambiente do projet
 
 ### Screen Shot - LocalStack
 <img src="https://github.com/cteotonio-rent/documentacao/blob/main/src/localstack.png" />
+
+### Screen Shot - Grafana
+<img src="https://github.com/cteotonio-rent/documentacao/blob/main/src/grafana.png" />
