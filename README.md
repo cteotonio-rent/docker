@@ -16,5 +16,6 @@ Repositório com arquivos dockers entre outros para iniciar o ambiente do projet
 8) Promtail - Container do agente para coleta de logs para Loki
 9) Grafana - Container para visualização dos logs
 
-| Container | Links | Observação
-| Localstack| localhots:4456 | precisa de autenticação no endereço https://app.localstack.cloud/
+| Container | Links | Observação |
+|-------------|-------------|-------------|
+| Localstack| localhots:4456 | precisa de autenticação no endereço https://app.localstack.cloud/ |
