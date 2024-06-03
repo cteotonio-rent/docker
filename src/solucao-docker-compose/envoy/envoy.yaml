@@ -33,15 +33,35 @@ static_resources:
               domains: ["*"]
               routes:
               - match:
-                  prefix: "/rent-service"
+                  prefix: "/rentservice/login"
                 route:
-                  prefix_rewrite: "*"
-                  cluster: rent.service
+                  prefix_rewrite: "/login"
+                  cluster: rent.service.cluster
               - match:
-                  prefix: "/order"
+                  prefix: "/rentservice/motorcycle"
                 route:
-                  prefix_rewrite: "/WeatherForecast"
-                  cluster: order
+                  prefix_rewrite: "/motorcycle"
+                  cluster: rent.service.cluster
+              - match:
+                  prefix: "/rentservice/order"
+                route:
+                  prefix_rewrite: "/order"
+                  cluster: rent.service.cluster
+              - match:
+                  prefix: "/rentservice/rental"
+                route:
+                  prefix_rewrite: "/rental"
+                  cluster: rent.service.cluster
+              - match:
+                  prefix: "/rentservice/user"
+                route:
+                  prefix_rewrite: "/user"
+                  cluster: rent.service.cluster
+              - match:
+                  prefix: "/rentservice/healthcheck"
+                route:
+                  prefix_rewrite: "/healthcheck"
+                  cluster: rent.service.cluster
               - match:
                   prefix: "/"
                 route:
@@ -49,21 +69,21 @@ static_resources:
                   cluster: service_envoyproxy_io
 
   clusters:
-  - name: rent-service
+  - name: rent.service.cluster
     connect_timeout: 0.25s
     type: LOGICAL_DNS
     # Comment out the following line to test on v6 networks
     dns_lookup_family: V4_ONLY
     lb_policy: ROUND_ROBIN
     load_assignment:
-      cluster_name: rent-service
+      cluster_name: rent.service.cluster
       endpoints:
       - lb_endpoints:
         - endpoint:
             address:
               socket_address:
                 address: rent.service
-                port_value: 8090
+                port_value: 80
   # - name: order
   #   connect_timeout: 0.25s
   #   type: LOGICAL_DNS
